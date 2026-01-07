@@ -17,6 +17,7 @@ spec:
               args:
                 - /data/acme.json
                 - /extract/map.json
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
               volumeMounts:
                 - name: traefik-data
                   mountPath: /data
@@ -28,7 +29,7 @@ spec:
           volumes:
             - name: traefik-data
               persistentVolumeClaim:
-                claimName: {{ .Values.traefik.existingClaim }}
+                claimName: {{ .Values.traefik.persistence.existingClaim }}
             - name: extract-map
               configMap:
                 name: {{ include "traefik-secrets-exporter.fullname" . }}-extract-map

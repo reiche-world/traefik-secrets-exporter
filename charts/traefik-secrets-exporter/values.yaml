@@ -1,23 +1,43 @@
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
+  # -- Registry to use
   registry: ghcr.io
+  # -- Image repository
   repository: reiche-world/traefik-secrets-exporter
+  # -- This sets the pull policy for images
   pullPolicy: IfNotPresent
-  tag: "latest"
+  # -- Overrides the image tag whose default is the chart appVersion
+  tag: "main"
 
 nameOverride: ""
 fullnameOverride: ""
 
+# This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "traefik-secrets-exporter"
 
 traefik:
-  existingClaim: "traefik"
+  persistence:
+    # -- Traefik PVC claim name that contains /data/acme.json
+    existingClaim: "traefik"
+  # -- Namespace that runs Traefik
   namespace: "kube-system"
 
 cronjob:
-  schedule: "*/10 * * * *"
+  # -- Cronjob schedule to use
+  schedule: "0 1 * * 0"
+  # -- Extract map
   extract:
-    - fqdn: "www.example.com"
+    -
+      # -- FQDN of certificate that matches domain.main in acme.json
+      fqdn: "www.example.com"
+      # -- Target namespace for the TLS secret
       namespace: "www"
