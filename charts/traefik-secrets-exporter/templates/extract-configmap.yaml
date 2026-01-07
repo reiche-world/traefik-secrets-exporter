@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "traefik-secrets-exporter.fullname" . }}-extract-map
+  namespace: {{ .Values.traefik.namespace }}
+data:
+  map.json: |
+{{ .Values.cronjob.extract | toJson | indent 4 }}

@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "traefik-secrets-exporter.fullname" . }}
+  namespace: {{ .Values.traefik.namespace }}
+spec:
+  schedule: {{ .Values.cronjob.schedule | quote }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ include "traefik-secrets-exporter.serviceAccountName" . }}
+          restartPolicy: OnFailure
+          containers:
+            - name: acme-export
+              image: "{{.Values.image.registry}}/{{.Values.image.repository}}:{{.Values.image.tag}}"
+              args:
+                - /data/acme.json
+                - /extract/map.json
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              volumeMounts:
+                - name: traefik-data
+                  mountPath: /data
+                  readOnly: true
+                - name: extract-map
+                  mountPath: /extract/map.json
+                  subPath: map.json
+                  readOnly: true
+          volumes:
+            - name: traefik-data
+              persistentVolumeClaim:
+                claimName: {{ .Values.traefik.persistence.existingClaim }}
+            - name: extract-map
+              configMap:
+                name: {{ include "traefik-secrets-exporter.fullname" . }}-extract-map

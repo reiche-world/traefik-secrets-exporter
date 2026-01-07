@@ -1,0 +1,23 @@
+name: Publish
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  publish-helm-chart:
+    name: Publish Helm chart
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v4
+      - uses: reiche-world/actions/publish-helm-chart@feature/publish-helm-chart
+        with:
+          user: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          chartPath: charts/traefik-secrets-exporter

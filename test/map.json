@@ -1,0 +1,10 @@
+[
+  {
+    "fqdn": "mail.example.com",
+    "namespace": "mail"
+  },
+  {
+    "fqdn": "www.example.com",
+    "namespace": "web"
+  }
+]
