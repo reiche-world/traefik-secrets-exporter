@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: traefik-tls-exporter
+  namespace: {{ .Values.traefik.namespace }}
+spec:
+  schedule: {{ .Values.cronjob.schedule | quote }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: traefik-tls-exporter
+          restartPolicy: OnFailure
+          containers:
+            - name: acme-export
+              image: "{{.Values.image.registry}}/{{.Values.image.repository}}:{{.Values.image.tag}}"
+              args:
+                - /data/acme.json
+              volumeMounts:
+                - name: traefik-data
+                  mountPath: /data
+                  readOnly: true
+          volumes:
+            - name: traefik-data
+              persistentVolumeClaim:
+                claimName: {{ .Values.traefik.existingClaim }}

@@ -1,0 +1,37 @@
+name: Build
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+on:
+  push:
+    paths:
+      - "Dockerfile"
+    branches: [ "main" ]
+  pull_request:
+    paths:
+      - "Dockerfile"
+    branches: [ "main" ]
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  issues: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  build-oci-image:
+    name: Build OCI image
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: reiche-world/actions/build-container@main
+        with:
+          user: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
