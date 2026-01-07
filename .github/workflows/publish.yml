@@ -16,7 +16,7 @@ jobs:
     permissions: write-all
     steps:
       - uses: actions/checkout@v4
-      - uses: reiche-world/actions/publish-helm-chart@feature/publish-helm-chart
+      - uses: reiche-world/actions/publish-helm-chart@main
         with:
           user: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
