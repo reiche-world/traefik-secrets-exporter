@@ -1,4 +1,4 @@
-# Traefik acme to secrets
+# Traefik Secrets exporter
 
 Extracts certificates from `acme.json` and provides them as Kubernetes secrets via. CronJob.
 
