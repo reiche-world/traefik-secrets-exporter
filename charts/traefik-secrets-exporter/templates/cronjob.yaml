@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: traefik-tls-exporter
+  name: {{ include "traefik-secrets-exporter.fullname" . }}
   namespace: {{ .Values.traefik.namespace }}
 spec:
   schedule: {{ .Values.cronjob.schedule | quote }}
@@ -9,18 +9,26 @@ spec:
     spec:
       template:
         spec:
-          serviceAccountName: traefik-tls-exporter
+          serviceAccountName: {{ include "traefik-secrets-exporter.serviceAccountName" . }}
           restartPolicy: OnFailure
           containers:
             - name: acme-export
               image: "{{.Values.image.registry}}/{{.Values.image.repository}}:{{.Values.image.tag}}"
               args:
                 - /data/acme.json
+                - /extract/map.json
               volumeMounts:
                 - name: traefik-data
                   mountPath: /data
+                  readOnly: true
+                - name: extract-map
+                  mountPath: /extract/map.json
+                  subPath: map.json
                   readOnly: true
           volumes:
             - name: traefik-data
               persistentVolumeClaim:
                 claimName: {{ .Values.traefik.existingClaim }}
+            - name: extract-map
+              configMap:
+                name: {{ include "traefik-secrets-exporter.fullname" . }}-extract-map

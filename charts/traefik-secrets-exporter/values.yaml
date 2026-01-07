@@ -5,6 +5,13 @@ image:
   pullPolicy: IfNotPresent
   tag: "latest"
 
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+
 traefik:
   existingClaim: "traefik"
   namespace: "kube-system"
