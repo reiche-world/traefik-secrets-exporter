@@ -1,6 +1,8 @@
-# Traefik acme to secrets
+# traefik-secrets-exporter
 
-Extracts certificates from `acme.json` and provides them as Kubernetes secrets via. CronJob.
+![Version: 0.0.0](https://img.shields.io/badge/Version-0.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+
+Extracts certificates from acme.json and provides them as Kubernetes secrets via. CronJob.
 
 ## Values
 
@@ -14,7 +16,7 @@ Extracts certificates from `acme.json` and provides them as Kubernetes secrets v
 | image.pullPolicy | string | `"IfNotPresent"` | This sets the pull policy for images |
 | image.registry | string | `"ghcr.io"` | Registry to use |
 | image.repository | string | `"reiche-world/traefik-secrets-exporter"` | Image repository |
-| image.tag | string | `"main"` | Overrides the image tag whose default is the chart appVersion |
+| image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion |
 | nameOverride | string | `""` |  |
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.automount | bool | `true` |  |
