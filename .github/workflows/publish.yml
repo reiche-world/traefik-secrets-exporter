@@ -18,8 +18,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Detect version
         id: version
-        uses: reiche-world/actions/determine-version@feature/version
-      - uses: reiche-world/actions/publish-helm-chart@feature/version
+        uses: reiche-world/actions/determine-version@main
+      - uses: reiche-world/actions/publish-helm-chart@main
         with:
           user: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
