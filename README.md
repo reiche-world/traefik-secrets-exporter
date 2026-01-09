@@ -19,6 +19,11 @@ Test the extraction within container:
 podman run -it -v"$(pwd):$(pwd)" -eDRY_RUN=1 traefik-secrets-exporter:latest "$(pwd)/test/acme.json" "$(pwd)/test/map.json"
 ```
 
+Debug the container:
+```shell
+podman run -it -v"$(pwd):$(pwd)" --entrypoint=sh traefik-secrets-exporter:latest
+```
+
 ## Update documentation
 
 ```shell

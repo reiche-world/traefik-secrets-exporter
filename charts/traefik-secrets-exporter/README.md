@@ -20,5 +20,6 @@ Extracts certificates from `acme.json` and provides them as Kubernetes secrets v
 | serviceAccount.automount | bool | `true` |  |
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.name | string | `"traefik-secrets-exporter"` |  |
+| traefik.acmeFilePath | string | `"/data/acme.json"` | Path to acme.json |
 | traefik.namespace | string | `"kube-system"` | Namespace that runs Traefik |
-| traefik.persistence.existingClaim | string | `"traefik"` | Traefik PVC claim name that contains /data/acme.json |
+| traefik.persistence.existingClaim | string | `"traefik"` | Traefik data persistence claim name |

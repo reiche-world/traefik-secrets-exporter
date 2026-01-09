@@ -16,8 +16,13 @@ jobs:
     permissions: write-all
     steps:
       - uses: actions/checkout@v4
-      - uses: reiche-world/actions/publish-helm-chart@main
+      - name: Detect version
+        id: version
+        uses: reiche-world/actions/determine-version@feature/version
+      - uses: reiche-world/actions/publish-helm-chart@feature/version
         with:
           user: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           chartPath: charts/traefik-secrets-exporter
+          chartVersion: ${{ steps.version.outputs.tag }}
+          appVersion: ${{ steps.version.outputs.tag }}

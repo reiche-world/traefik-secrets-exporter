@@ -13,9 +13,9 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: acme-export
-              image: "{{.Values.image.registry}}/{{.Values.image.repository}}:{{.Values.image.tag}}"
+              image: "{{.Values.image.registry}}/{{.Values.image.repository}}:{{ .Values.image.tag | default .Chart.AppVersion }}"
               args:
-                - /data/acme.json
+                - {{ .Values.traefik.acmeFilePath }}
                 - /extract/map.json
               imagePullPolicy: {{ .Values.image.pullPolicy }}
               volumeMounts:

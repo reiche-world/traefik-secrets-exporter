@@ -26,8 +26,10 @@ serviceAccount:
 
 traefik:
   persistence:
-    # -- Traefik PVC claim name that contains /data/acme.json
+    # -- Traefik data persistence claim name
     existingClaim: "traefik"
+  # -- Path to acme.json
+  acmeFilePath: "/data/acme.json"
   # -- Namespace that runs Traefik
   namespace: "kube-system"
 

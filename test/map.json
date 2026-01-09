@@ -5,6 +5,11 @@
   },
   {
     "fqdn": "www.example.com",
-    "namespace": "web"
+    "namespace": "web",
+    "secretName": "webssl"
+  },
+  {
+    "fqdn": "inexistent.example.com",
+    "namespace": "default"
   }
 ]

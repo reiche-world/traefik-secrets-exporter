@@ -3,4 +3,4 @@ name: traefik-secrets-exporter
 description: Extracts certificates from acme.json and provides them as Kubernetes secrets via. CronJob.
 type: application
 version: 0.0.0
-
+appVersion: 0.0.0

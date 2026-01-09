@@ -5,21 +5,44 @@ set -e
 ACME_FILE=$1
 MAP_FILE=$2
 
-jq -c '.[] | {fqdn, namespace}' ${MAP_FILE} | while read -r line; do
+base64_version=$(base64 --version 2>&1 || true)
+
+case ${base64_version} in
+  *"FreeBSD"*) base64_freebsd=1 ;;
+esac
+
+base64_decode() {
+  file="$1"
+  if [ -n "${base64_freebsd}" ]; then
+    base64 -d -i "${file}.b64" -o "${file}"
+  else
+    base64 -d "${file}.b64" > "${file}"
+  fi
+}
+
+jq -c '.[] | {fqdn, namespace, secretName}' ${MAP_FILE} | while read -r line; do
     fqdn=$(echo "${line}" | jq -r '.fqdn')
     namespace=$(echo "${line}" | jq -r '.namespace')
+    secret_name="$(echo "${line}" | jq -r '.secretName')"
+    if [ ${secret_name} == "null" ]; then
+      secret_name="${fqdn}-tls"
+    fi
     cert_file="${fqdn}.crt"
     key_file="${fqdn}.key"
     secret_file="${fqdn}.yaml"
-    secret_name="${fqdn}-tls"
-
-    echo "Extract ${fqdn} to Secret ${namespace}.${secret_name}"
 
     jq -r --arg d "${fqdn}" '.[].Certificates[] | select(.domain.main==$d) | .certificate' "${ACME_FILE}" > "${cert_file}.b64"
-    jq -r --arg d "${fqdn}" '.[].Certificates[] | select(.domain.main==$d) | .key' "${ACME_FILE}" > "${key_file}.b64"
 
-    base64 -d "${cert_file}.b64" > "${cert_file}"
-    base64 -d "${key_file}.b64" > "${key_file}"
+    if [ ! -s "${cert_file}.b64" ]; then
+      echo "Warning: ${ACME_FILE}:${fqdn} not found"
+      continue
+    else
+      echo "Extract ${ACME_FILE}:${fqdn} to ${namespace}/secret/${secret_name}"
+    fi
+
+    jq -r --arg d "${fqdn}" '.[].Certificates[] | select(.domain.main==$d) | .key' "${ACME_FILE}" > "${key_file}.b64"
+    base64_decode "${cert_file}"
+    base64_decode "${key_file}"
 
     kubectl create secret tls "${secret_name}" \
         --namespace "${namespace}" \
